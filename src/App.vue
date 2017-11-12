@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <app-header></app-header>
+    <app-header :seller="seller"></app-header>
     <div class="tab">
       <div class="tab-item">
         <router-link to="goods">商品</router-link>
@@ -17,10 +17,31 @@
 </template>
 
 <script>
+import { urlParse } from './assets/js/util'
 import AppHeader from '@/components/AppHeader'
 export default {
     components: {
       AppHeader
+    },
+    data () {
+      return {
+        seller: {
+          id: (() => {
+            let queryParam = urlParse();
+            return queryParam.id;
+          })()
+        }
+      }
+    },
+    mounted () {
+      this.$http.get('/api/seller?id=' + this.seller.id)
+      .then( (response) => {
+        console.log(response);
+        this.seller = Object.assign({}, this.seller, response.data.data)
+      })
+      .catch( (error) => {
+        console.log(error);
+      });
     }
 }
 </script>
