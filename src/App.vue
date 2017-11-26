@@ -3,16 +3,18 @@
     <app-header :seller="seller"></app-header>
     <div class="tab">
       <div class="tab-item">
-        <router-link to="goods">商品</router-link>
+        <router-link to="/goods">商品</router-link>
       </div>
       <div class="tab-item">
-        <router-link to="ratings">评论</router-link>
+        <router-link to="/ratings">评论</router-link>
       </div>
       <div class="tab-item">
-        <router-link to="seller">商家</router-link>
+        <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view></router-view>
+    <keep-alive>
+      <router-view :seller="seller" ></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -30,6 +32,9 @@ export default {
             let queryParam = urlParse();
             return queryParam.id;
           })()
+        },
+        goods: {
+
         }
       }
     },
@@ -38,6 +43,15 @@ export default {
       .then( (response) => {
         console.log(response);
         this.seller = Object.assign({}, this.seller, response.data.data)
+      })
+      .catch( (error) => {
+        console.log(error);
+      });
+
+      this.$http.get('/api/goods')
+      .then( (response) => {
+        console.log('goods:', response);
+        this.goods = Object.assign({}, this.goods, response.data.data)
       })
       .catch( (error) => {
         console.log(error);
